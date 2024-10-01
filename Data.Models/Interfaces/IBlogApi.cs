@@ -3,11 +3,11 @@ namespace Data.Models.Interfaces;
 public interface IBlogApi
 {
     Task<int> GetBlogPostCountAsync();
+    Task<BlogPost?> GetBlogPostAsync(string id);
     Task<List<BlogPost>> GetBlogPostsAsync(int numberofposts, int startindex);
     Task<List<Category>> GetCategoriesAsync();
     Task<List<Tag>> GetTagsAsync();
     Task<List<Comment>> GetCommentsAsync(string blogPostId);
-    Task<BlogPost?> GetBlogPostAsync(string id);
     Task<Category?> GetCategoryAsync(string id);
     Task<Tag?> GetTagAsync(string id);
     Task<BlogPost?> SaveBlogPostAsync(BlogPost item);

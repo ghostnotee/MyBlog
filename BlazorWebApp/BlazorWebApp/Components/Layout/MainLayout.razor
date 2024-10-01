@@ -7,6 +7,7 @@
 
     <main>
         <div class="top-row px-4">
+            <SectionOutlet SectionId="TopHeader"/>
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
 
@@ -21,3 +22,8 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code
+{
+    public static SectionOutlet TopHeader = new();
+}
