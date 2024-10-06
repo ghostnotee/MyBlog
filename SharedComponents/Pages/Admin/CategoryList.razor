@@ -1,4 +1,5 @@
 @page "/admin/categories"
+@using SharedComponents.ReusableComponents
 @rendermode InteractiveServer
 
 @inject IBlogApi _api
@@ -8,9 +9,8 @@
 <EditForm OnValidSubmit="Save" Model="Item">
     <DataAnnotationsValidator/>
     <CustomCssClassProvider ProviderType="BootstrapFieldCssClassProvider"/>
-    <InputText @bind-Value="@Item.Name"/>
-    <ValidationMessage For="@(() => Item.Name)"/>
-    <button class="btn btn-success" type="submit">Save</button>
+    <BlogInputText @bind-Value="@Item.Name" Label="Name" />
+    <BlogButton Type="BlogButton.ButtonType.Save">Save</BlogButton>
 </EditForm>
 
 <ItemList Items="Items" DeleteEvent="@Delete" SelectEvent="@Select" ItemType="Category">
