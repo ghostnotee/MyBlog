@@ -12,7 +12,7 @@ public class BootstrapFieldCssClassProvider : FieldCssClassProvider
         {
             (true, true) => "form-control modified is-valid",
             (true, false) => "form-control modified is-invalid",
-            (false, true) => "form-control",
+            (false, true) =>"form-control",
             (false, false) => "form-control"
         };
     }

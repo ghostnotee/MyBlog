@@ -2,18 +2,18 @@
 @using Data.Models
 @using Data.Models.Interfaces
 @using SharedComponents
+@using SharedComponents.ReusableComponents
 @rendermode InteractiveServer
 @inject IBlogApi _api
 
 <h3>Tags</h3>
 
 <EditForm OnValidSubmit="Save" Model="Item">
-    <DataAnnotationsValidator />
+    <DataAnnotationsValidator/>
     <CustomCssClassProvider
-        ProviderType="BootstrapFieldCssClassProvider" />
-    <InputText @bind-Value="@Item.Name" />
-    <ValidationMessage For="@(()=>Item.Name)" />
-    <button class="btn btn-success" type="submit">Save</button>
+        ProviderType="BootstrapFieldCssClassProvider"/>
+    <BlogInputText @bind-Value="@Item.Name" Label="Name"/>
+    <BlogButton Type="BlogButton.ButtonType.Save">Save</BlogButton>
 </EditForm>
 
 <ItemList Items="Items" DeleteEvent="@Delete" SelectEvent="@Select" ItemType="Tag">
