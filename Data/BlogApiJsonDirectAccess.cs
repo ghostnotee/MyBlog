@@ -7,60 +7,13 @@ namespace Data;
 
 public class BlogApiJsonDirectAccess : IBlogApi
 {
-    BlogApiJsonDirectAccessSetting _settings;
+    private readonly BlogApiJsonDirectAccessSetting _settings;
+
     public BlogApiJsonDirectAccess(IOptions<BlogApiJsonDirectAccessSetting> option)
     {
         _settings = option.Value;
 
         ManageDataPaths();
-    }
-    private void ManageDataPaths()
-    {
-        CreateDirectoryIfNotExists(_settings.DataPath);
-        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.BlogPostsFolder}");
-        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.CategoriesFolder}");
-        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.TagsFolder}");
-        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.CommentsFolder}");
-    }
-
-    private static void CreateDirectoryIfNotExists(string path)
-    {
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-    }
-
-    private async Task<List<T>> LoadAsync<T>(string folder)
-    {
-        var list = new List<T>();
-        foreach (var f in Directory.GetFiles($"{_settings.DataPath}/{folder}"))
-        {
-            var json = await File.ReadAllTextAsync(f);
-            var blogPost = JsonSerializer.Deserialize<T>(json);
-            if (blogPost is not null)
-            {
-                list.Add(blogPost);
-            }
-        }
-
-        return list;
-    }
-
-    private async Task SaveAsync<T>(string folder, string filename, T item)
-    {
-        var filepath = $@"{_settings.DataPath}/{folder}/{filename}.json";
-        await File.WriteAllTextAsync(filepath, JsonSerializer.Serialize<T>(item));
-    }
-
-    private Task DeleteAsync(string folder, string filename)
-    {
-        var filepath = $"{_settings.DataPath}/{folder}/{filename}.json";
-        if (File.Exists(filepath))
-        {
-            File.Delete(filepath);
-        }
-        return Task.CompletedTask;
     }
 
 
@@ -131,6 +84,7 @@ public class BlogApiJsonDirectAccess : IBlogApi
         await SaveAsync(_settings.TagsFolder, item.Id, item);
         return item;
     }
+
     public async Task<Comment?> SaveCommentAsync(Comment item)
     {
         item.Id ??= Guid.NewGuid().ToString();
@@ -142,15 +96,11 @@ public class BlogApiJsonDirectAccess : IBlogApi
     public async Task DeleteBlogPostAsync(string id)
     {
         await DeleteAsync(_settings.BlogPostsFolder, id);
-        
+
         var comments = await GetCommentsAsync(id);
         foreach (var comment in comments)
-        {
             if (comment.Id != null)
-            {
                 await DeleteAsync(_settings.CommentsFolder, comment.Id);
-            }
-        }
     }
 
     public async Task DeleteCategoryAsync(string id)
@@ -166,5 +116,45 @@ public class BlogApiJsonDirectAccess : IBlogApi
     public async Task DeleteCommentAsync(string id)
     {
         await DeleteAsync(_settings.CommentsFolder, id);
+    }
+
+    private void ManageDataPaths()
+    {
+        CreateDirectoryIfNotExists(_settings.DataPath);
+        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.BlogPostsFolder}");
+        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.CategoriesFolder}");
+        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.TagsFolder}");
+        CreateDirectoryIfNotExists($"{_settings.DataPath}/{_settings.CommentsFolder}");
+    }
+
+    private static void CreateDirectoryIfNotExists(string path)
+    {
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+    }
+
+    private async Task<List<T>> LoadAsync<T>(string folder)
+    {
+        var list = new List<T>();
+        foreach (var f in Directory.GetFiles($"{_settings.DataPath}/{folder}"))
+        {
+            var json = await File.ReadAllTextAsync(f);
+            var blogPost = JsonSerializer.Deserialize<T>(json);
+            if (blogPost is not null) list.Add(blogPost);
+        }
+
+        return list;
+    }
+
+    private async Task SaveAsync<T>(string folder, string filename, T item)
+    {
+        var filepath = $@"{_settings.DataPath}/{folder}/{filename}.json";
+        await File.WriteAllTextAsync(filepath, JsonSerializer.Serialize(item));
+    }
+
+    private Task DeleteAsync(string folder, string filename)
+    {
+        var filepath = $"{_settings.DataPath}/{folder}/{filename}.json";
+        if (File.Exists(filepath)) File.Delete(filepath);
+        return Task.CompletedTask;
     }
 }

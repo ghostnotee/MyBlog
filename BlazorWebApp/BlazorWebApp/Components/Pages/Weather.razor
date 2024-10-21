@@ -1,4 +1,5 @@
 ﻿@page "/weather"
+@using BlazorWebApp.Components.Layout
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
@@ -38,7 +39,7 @@ else
     </table>
 }
 
-<SectionContent SectionId="Layout.MainLayout.TopHeader">
+<SectionContent SectionId="MainLayout.TopHeader">
     <b>Using SectionId from Weather component to main layout</b>
 </SectionContent>
 

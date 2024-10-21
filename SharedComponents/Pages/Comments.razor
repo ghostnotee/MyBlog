@@ -1,5 +1,4 @@
 @using SharedComponents.ReusableComponents
-@using Microsoft.AspNetCore.Components.Forms
 @inject IBlogApi _api
 
 <h3>Comments</h3>
@@ -26,7 +25,7 @@
 }
 
 @code{
-    [Parameter, EditorRequired] public required string BlogPostId { get; set; }
+    [Parameter] [EditorRequired] public required string BlogPostId { get; set; }
     [SupplyParameterFromForm] public Comment? Model { get; set; } = new();
     List<Comment> comments = new();
 
@@ -43,4 +42,5 @@
         await _api.SaveCommentAsync(Model);
         comments = await _api.GetCommentsAsync(BlogPostId);
     }
+
 }

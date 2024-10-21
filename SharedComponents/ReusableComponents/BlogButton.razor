@@ -41,7 +41,7 @@
         }
         set => _disabled = value;
     }
-    
+
     private bool TryGetValidationMessages(out string[] validationMessages)
     {
         validationMessages = Array.Empty<string>();
@@ -59,8 +59,8 @@
     [Parameter]
     public string? DisabledHelpText
     {
-        get { return _disabledHelpText + (MarkupString)"\r\n" + formerrors; }
-        set { _disabledHelpText = value; }
+        get => _disabledHelpText + (MarkupString)"\r\n" + formerrors;
+        set => _disabledHelpText = value;
     }
 
     [Parameter] public string? HelpText { get; set; }
