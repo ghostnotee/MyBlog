@@ -1,7 +1,7 @@
 using BlazorWebApp.Client.Pages;
 using BlazorWebApp.Components;
+using BlazorWebApp.Endpoints;
 using Data;
-using Data.Models;
 using Data.Models.Interfaces;
 using SharedComponents.Pages;
 
@@ -32,7 +32,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -47,5 +47,10 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Counter).Assembly)
     .AddAdditionalAssemblies(typeof(Home).Assembly);
+
+app.MapBlogPostApi();
+app.MapCategoryApi();
+app.MapTagApi();
+app.MapCommentApi();
 
 app.Run();

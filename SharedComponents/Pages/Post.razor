@@ -1,7 +1,7 @@
 @page "/post/{BlogPostId}"
+@using Markdig
 @inject IBlogApi _api
 @inject NavigationManager _navman
-@using Markdig;
 
 
 @if (BlogPost != null)
@@ -14,10 +14,10 @@
         <meta property="og:url" content="@_navman.Uri"/>
         <meta name="twitter:card" content="@(new string(BlogPost.Text.Take(100).ToArray()))"/>
     </HeadContent>
-    
+
     <h2>@BlogPost.Title</h2>
     @((MarkupString)Markdown.ToHtml(BlogPost.Text, pipeline))
-    <Comments BlogPostId="@BlogPostId" />
+    <Comments BlogPostId="@BlogPostId"/>
 }
 
 @code {
@@ -30,8 +30,9 @@
         BlogPost = await _api.GetBlogPostAsync(BlogPostId);
         await base.OnParametersSetAsync();
     }
-    
+
     MarkdownPipeline pipeline;
+
     protected override Task OnInitializedAsync()
     {
         pipeline = new MarkdownPipelineBuilder()
