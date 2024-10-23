@@ -10,7 +10,7 @@
         <ProjectReference Include="..\..\Data\Data.csproj"/>
         <ProjectReference Include="..\..\SharedComponents\SharedComponents.csproj"/>
         <ProjectReference Include="..\BlazorWebApp.Client\BlazorWebApp.Client.csproj"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.10" />
     </ItemGroup>
 
 </Project>
