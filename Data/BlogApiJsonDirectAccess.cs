@@ -29,7 +29,7 @@ public class BlogApiJsonDirectAccess : IBlogApi
         return list.Skip(startindex).Take(numberofposts).ToList();
     }
 
-    public async Task<List<Category>> GetCategoriesAsync()
+    public async Task<List<Category>?> GetCategoriesAsync()
     {
         return await LoadAsync<Category>(_settings.CategoriesFolder);
     }
@@ -41,7 +41,7 @@ public class BlogApiJsonDirectAccess : IBlogApi
     }
 
 
-    public async Task<List<Tag>> GetTagsAsync()
+    public async Task<List<Tag>?> GetTagsAsync()
     {
         return await LoadAsync<Tag>(_settings.TagsFolder);
     }
@@ -58,7 +58,7 @@ public class BlogApiJsonDirectAccess : IBlogApi
         return list.FirstOrDefault(bp => bp.Id == id);
     }
 
-    public async Task<List<Comment>> GetCommentsAsync(string blogPostId)
+    public async Task<List<Comment>?> GetCommentsAsync(string blogPostId)
     {
         var list = await LoadAsync<Comment>(_settings.CommentsFolder);
         return list.Where(t => t.BlogPostId == blogPostId).ToList();

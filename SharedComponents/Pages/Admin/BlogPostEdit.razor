@@ -52,7 +52,7 @@
 
     [Parameter] public string? Id { get; set; }
     BlogPost Post { get; set; } = new();
-    List<Category> Categories { get; set; } = new();
+    List<Category>? Categories { get; set; } = new();
     List<Tag> Tags { get; set; } = new();
     string? selectedCategory;
     string? markDownAsHTML { get; set; }
