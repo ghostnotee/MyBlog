@@ -10,6 +10,8 @@
         <ProjectReference Include="..\..\Data\Data.csproj"/>
         <ProjectReference Include="..\..\SharedComponents\SharedComponents.csproj"/>
         <ProjectReference Include="..\BlazorWebApp.Client\BlazorWebApp.Client.csproj"/>
+        <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.10" />
     </ItemGroup>
 
