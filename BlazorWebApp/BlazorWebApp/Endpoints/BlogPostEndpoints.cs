@@ -10,18 +10,16 @@ public static class BlogPostEndpoints
     {
         app.MapGet("/api/BlogPosts",
             async (IBlogApi api, [FromQuery] int numberofposts, [FromQuery] int startindex) =>
-            {
-                return Results.Ok(await api.GetBlogPostsAsync(numberofposts, startindex));
-            });
+            Results.Ok((object?)await api.GetBlogPostsAsync(numberofposts, startindex)));
 
         app.MapGet("/api/BlogPostCount",
-            async (IBlogApi api) => { return Results.Ok(await api.GetBlogPostCountAsync()); });
+            async (IBlogApi api) => Results.Ok((object?)await api.GetBlogPostCountAsync()));
 
         app.MapGet("/api/BlogPosts/{*id}",
-            async (IBlogApi api, string id) => { return Results.Ok(await api.GetBlogPostAsync(id)); });
+            async (IBlogApi api, string id) => Results.Ok((object?)await api.GetBlogPostAsync(id)));
 
         app.MapPut("/api/BlogPosts",
-            async (IBlogApi api, [FromBody] BlogPost item) => { return Results.Ok(await api.SaveBlogPostAsync(item)); }).RequireAuthorization();
+            async (IBlogApi api, [FromBody] BlogPost item) => Results.Ok((object?)await api.SaveBlogPostAsync(item))).RequireAuthorization();
 
         app.MapDelete("/api/BlogPosts/{*id}", async (IBlogApi api, string id) =>
         {
