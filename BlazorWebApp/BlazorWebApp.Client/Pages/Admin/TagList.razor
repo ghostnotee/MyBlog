@@ -3,8 +3,8 @@
 @using Data.Models.Interfaces
 @using SharedComponents
 @using SharedComponents.ReusableComponents
-@rendermode InteractiveServer
-@inject IBlogApi _api
+@rendermode InteractiveWebAssembly
+@inject IBlogApi Api
 @attribute [Authorize]
 
 <h3>Tags</h3>
@@ -36,7 +36,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Items = await _api.GetTagsAsync() ?? new List<Tag>();
+        Items = await Api.GetTagsAsync() ?? new List<Tag>();
         await base.OnInitializedAsync();
     }
 
@@ -44,7 +44,7 @@
     {
         try
         {
-            await _api.DeleteTagAsync(tag.Id!);
+            await Api.DeleteTagAsync(tag.Id!);
             Items.Remove(tag);
         }
         catch
@@ -56,7 +56,7 @@
     {
         try
         {
-            await _api.SaveTagAsync(Item);
+            await Api.SaveTagAsync(Item);
             if (!Items.Contains(Item))
             {
                 Items.Add(Item);
