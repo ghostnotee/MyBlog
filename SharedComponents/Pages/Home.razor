@@ -1,29 +1,41 @@
 @page "/"
-@inject IBlogApi _api
+@using Markdig
+@inject IBlogApi Api
 @rendermode InteractiveServer
 
-<ul>
-    <Virtualize ItemsProvider="LoadPosts" Context="p">
-        <li>
-            <a href="/Post/@p.Id">@p.Title</a>
-        </li>
-    </Virtualize>
-</ul>
+<Virtualize ItemsProvider="LoadPosts" Context="p">
+    <article>
+        <h2>@p.Title</h2>
+        @((MarkupString)Markdown.ToHtml(new string(p.Text.Take(100).ToArray()), pipeline))
+        <a href="/Post/@p.Id">Read more</a>
+    </article>
+</Virtualize>
+
 
 @code {
-    protected List<BlogPost> posts = new();
-    public int totalBlogPosts { get; set; }
+    protected List<BlogPost> Posts = new();
+    public int TotalBlogPosts { get; set; }
 
     private async ValueTask<ItemsProviderResult<BlogPost>> LoadPosts(ItemsProviderRequest request)
     {
-        if (totalBlogPosts == 0)
+        if (TotalBlogPosts == 0)
         {
-            totalBlogPosts = await _api.GetBlogPostCountAsync();
+            TotalBlogPosts = await Api.GetBlogPostCountAsync();
         }
 
-        var numBlogPosts = Math.Min(request.Count, totalBlogPosts - request.StartIndex);
-        var blogPosts = await _api.GetBlogPostsAsync(numBlogPosts, request.StartIndex);
-        return new ItemsProviderResult<BlogPost>(blogPosts, totalBlogPosts);
+        var numBlogPosts = Math.Min(request.Count, TotalBlogPosts - request.StartIndex);
+        var blogPosts = await Api.GetBlogPostsAsync(numBlogPosts, request.StartIndex);
+        return new ItemsProviderResult<BlogPost>(blogPosts, TotalBlogPosts);
+    }
+
+    MarkdownPipeline pipeline;
+
+    protected override Task OnInitializedAsync()
+    {
+        pipeline = new MarkdownPipelineBuilder()
+            .UseEmojiAndSmiley()
+            .Build();
+        return base.OnInitializedAsync();
     }
 
 }
