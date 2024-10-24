@@ -9,28 +9,22 @@ using Microsoft.Extensions.Options;
 
 namespace BlazorWebApp;
 
-public class PersistingServerAuthenticationStateProvider : ServerAuthenticationStateProvider, IDisposable
+internal sealed class PersistingServerAuthenticationStateProvider : ServerAuthenticationStateProvider, IDisposable
 {
     private readonly IdentityOptions _options;
     private readonly PersistentComponentState _state;
-
     private readonly PersistingComponentStateSubscription _subscription;
-
     private Task<AuthenticationState>? _authenticationStateTask;
 
     public PersistingServerAuthenticationStateProvider(PersistentComponentState persistentComponentState, IOptions<IdentityOptions> optionsAccessor)
     {
         _state = persistentComponentState;
         _options = optionsAccessor.Value;
-
         AuthenticationStateChanged += OnAuthenticationStateChanged;
         _subscription = _state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
     }
 
-    private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
-    {
-        _authenticationStateTask = task;
-    }
+    private void OnAuthenticationStateChanged(Task<AuthenticationState> task) => _authenticationStateTask = task;
 
     private async Task OnPersistingAsync()
     {

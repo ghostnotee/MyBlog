@@ -1,6 +1,15 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<AuthorizeView Roles="Administrator">
+    <Authorized>
+        Hi admin! 🤘🏻
+    </Authorized>
+    <NotAuthorized>
+        You are not an admin 🫤
+    </NotAuthorized>
+</AuthorizeView>
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorWebApp</a>
+        <a class="navbar-brand" href="">MyBlog Admin</a>
     </div>
 </div>
 
@@ -15,14 +24,20 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="Admin/Blogposts">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Blog posts
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            <NavLink class="nav-link" href="Admin/Tags">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Tags
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Admin/Categories">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Categories
             </NavLink>
         </div>
     </nav>

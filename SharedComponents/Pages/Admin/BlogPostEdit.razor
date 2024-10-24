@@ -5,6 +5,7 @@
 @rendermode InteractiveServer
 @inject IBlogApi _api
 @inject NavigationManager _manager
+@attribute [Authorize]
 
 <EditForm Model="Post" OnValidSubmit="SavePostAsync">
     <DataAnnotationsValidator/>
