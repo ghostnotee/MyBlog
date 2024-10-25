@@ -6,7 +6,7 @@
 <Virtualize ItemsProvider="LoadPosts" Context="p">
     <article>
         <h2>@p.Title</h2>
-        @((MarkupString)Markdown.ToHtml(new string(p.Text.Take(100).ToArray()), pipeline))
+        @((MarkupString)Markdown.ToHtml(new string(p.Text.Take(100).ToArray()), _pipeline))
         <a href="/Post/@p.Id">Read more</a>
     </article>
 </Virtualize>
@@ -28,14 +28,13 @@
         return new ItemsProviderResult<BlogPost>(blogPosts, TotalBlogPosts);
     }
 
-    MarkdownPipeline pipeline;
+    MarkdownPipeline _pipeline = null!;
 
     protected override Task OnInitializedAsync()
     {
-        pipeline = new MarkdownPipelineBuilder()
+        _pipeline = new MarkdownPipelineBuilder()
             .UseEmojiAndSmiley()
             .Build();
         return base.OnInitializedAsync();
     }
-
 }
