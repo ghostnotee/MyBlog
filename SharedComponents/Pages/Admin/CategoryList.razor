@@ -2,8 +2,7 @@
 @using SharedComponents.ReusableComponents
 @rendermode InteractiveServer
 @attribute [Authorize]
-
-@inject IBlogApi _api
+@inject IBlogApi Api
 
 <h3>Categories</h3>
 
@@ -17,10 +16,9 @@
 <ItemList Items="Items" DeleteEvent="@Delete" SelectEvent="@Select" ItemType="Category">
     <ItemTemplate>
         @{
-            var item = context;
-            if (item != null)
+            if (context != null)
             {
-                @item.Name
+                @context.Name
             }
         }
     </ItemTemplate>
@@ -32,7 +30,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Items = await _api.GetCategoriesAsync() ?? [];
+        Items = await Api.GetCategoriesAsync() ?? [];
         await base.OnInitializedAsync();
     }
 
@@ -40,11 +38,12 @@
     {
         try
         {
-            await _api.DeleteCategoryAsync(category.Id!);
+            await Api.DeleteCategoryAsync(category.Id!);
             Items.Remove(category);
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -52,7 +51,7 @@
     {
         try
         {
-            await _api.SaveCategoryAsync(Item);
+            await Api.SaveCategoryAsync(Item);
             if (!Items.Contains(Item))
             {
                 Items.Add(Item);
@@ -62,6 +61,7 @@
         }
         catch
         {
+            // ignored
         }
     }
 
@@ -73,6 +73,7 @@
         }
         catch
         {
+            // ignored
         }
 
         return Task.CompletedTask;

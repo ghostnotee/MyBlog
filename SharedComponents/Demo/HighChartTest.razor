@@ -1,0 +1,26 @@
+@rendermode InteractiveServer
+
+@page "/HighChartTest"
+
+<HighChart Json="@_chartJson">
+
+</HighChart>
+
+@code {
+
+    readonly string _chartJson = @" {
+    chart: { type: 'pie' },
+    series: [{
+        data: [{
+            name: 'Does not look like Pacman',
+            color:'black',
+            y: 20,
+        }, {
+            name: 'Looks like Pacman',
+            color:'yellow',
+            y: 80
+        }]
+    }]
+}";
+
+}

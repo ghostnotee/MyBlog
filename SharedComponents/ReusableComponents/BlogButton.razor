@@ -1,4 +1,7 @@
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@inject IJSRuntime JsRuntime
+
 <button type="@InternalButtonType" disabled="@Disabled" class="@InternalCssClass" title="@Title" @onclick="OnButtonClick">
     @ChildContent
 </button>
@@ -70,7 +73,7 @@
 
     private async Task OnButtonClick(EventArgs args)
     {
-        if (OnClick.HasDelegate)
+        if (OnClick.HasDelegate && await ShouldExecute())
         {
             await OnClick.InvokeAsync(args);
         }
@@ -103,4 +106,13 @@
         Select
     }
 
+    IJSObjectReference _jsModule = null!;
+    [Parameter] public string? ConfirmMessage { get; set; } = null;
+
+    private async Task<bool> ShouldExecute()
+    {
+        if (ConfirmMessage == null) return true;
+        _jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "/_content/SharedComponents/ReusableComponents/BlogButton.razor.js");
+        return await _jsModule.InvokeAsync<bool>("showConfirm", ConfirmMessage);
+    }
 }
