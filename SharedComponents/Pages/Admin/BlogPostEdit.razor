@@ -1,11 +1,13 @@
 @page "/admin/blogposts/new"
 @page "/admin/blogposts/{Id}"
 @using Markdig
+@using SharedComponents.Interfaces
 @using SharedComponents.ReusableComponents
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
 @inject IBlogApi Api
 @inject NavigationManager Manager
-@inject SharedComponents.Interfaces.IBrowserStorage BrowserStorage
+@inject IBrowserStorage BrowserStorage
 @attribute [Authorize]
 
 <EditForm Model="Post" OnValidSubmit="SavePostAsync">
@@ -30,22 +32,22 @@
                 @tag.Name
                 @if (Post.Tags.Any(t => t.Id == tag.Id))
                 {
-                    <BlogButton Type="BlogButton.ButtonType.Save" @onclick="@(() => { Post.Tags.Remove(Post.Tags.Single(t => t.Id == tag.Id)); })">
+                    <BlogButton Type="BlogButton.ButtonType.Save" OnClick="@(() => { Post.Tags.Remove(Post.Tags.Single(t => t.Id == tag.Id)); })">
                         Remove
                     </BlogButton>
                 }
                 else
                 {
-                    <button type="button" @onclick="@(() => { Post.Tags.Add(tag); })">
+                    <BlogButton Type="BlogButton.ButtonType.Save" OnClick="@(() => { Post.Tags.Add(tag); })">
                         Add
-                    </button>
+                    </BlogButton>
                 }
             </li>
         }
     </ul>
     <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHtmlAsync"/>
     <ValidationMessage For="() => Post.Text"/>
-    <BlogButton Type="BlogButton.ButtonType.Save">Save</BlogButton>
+    <BlogButton Type="BlogButton.ButtonType.Save" OnClick="SavePostAsync">Save</BlogButton>
 </EditForm>
 
 @((MarkupString)MarkDownAsHtml!)
