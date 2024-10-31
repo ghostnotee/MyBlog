@@ -21,7 +21,7 @@ public class BlogApiWebClient : IBlogApi
         return client.GetFromJsonAsync<int>("/api/BlogPostCount");
     }
 
-    public async Task<BlogPost?> GetBlogPostAsync(string id)
+    public async Task<BlogPost?> GetBlogPostAsync(string? id)
     {
         var client = _factory.CreateClient("Api");
         return await client.GetFromJsonAsync<BlogPost>($"api/BlogPosts/{id}");
@@ -51,7 +51,7 @@ public class BlogApiWebClient : IBlogApi
         return client.GetFromJsonAsync<List<Tag>>("api/Tags");
     }
 
-    public Task<List<Comment>?> GetCommentsAsync(string blogPostId)
+    public Task<List<Comment>?> GetCommentsAsync(string? blogPostId)
     {
         var client = _factory.CreateClient("Api");
         return client.GetFromJsonAsync<List<Comment>>($"api/Comments/{blogPostId}");
@@ -130,7 +130,7 @@ public class BlogApiWebClient : IBlogApi
         return null;
     }
 
-    public async Task DeleteBlogPostAsync(string id)
+    public async Task DeleteBlogPostAsync(string? id)
     {
         try
         {
@@ -143,7 +143,7 @@ public class BlogApiWebClient : IBlogApi
         }
     }
 
-    public async Task DeleteCategoryAsync(string id)
+    public async Task DeleteCategoryAsync(string? id)
     {
         try
         {
@@ -156,7 +156,7 @@ public class BlogApiWebClient : IBlogApi
         }
     }
 
-    public async Task DeleteTagAsync(string id)
+    public async Task DeleteTagAsync(string? id)
     {
         try
         {
@@ -169,7 +169,7 @@ public class BlogApiWebClient : IBlogApi
         }
     }
 
-    public async Task DeleteCommentAsync(string id)
+    public async Task DeleteCommentAsync(string? id)
     {
         try
         {

@@ -52,13 +52,13 @@ public class BlogApiJsonDirectAccess : IBlogApi
         return list.FirstOrDefault(t => t.Id == id);
     }
 
-    public async Task<BlogPost?> GetBlogPostAsync(string id)
+    public async Task<BlogPost?> GetBlogPostAsync(string? id)
     {
         var list = await LoadAsync<BlogPost>(_settings.BlogPostsFolder);
         return list.FirstOrDefault(bp => bp.Id == id);
     }
 
-    public async Task<List<Comment>?> GetCommentsAsync(string blogPostId)
+    public async Task<List<Comment>?> GetCommentsAsync(string? blogPostId)
     {
         var list = await LoadAsync<Comment>(_settings.CommentsFolder);
         return list.Where(t => t.BlogPostId == blogPostId).ToList();
@@ -93,7 +93,7 @@ public class BlogApiJsonDirectAccess : IBlogApi
     }
 
 
-    public async Task DeleteBlogPostAsync(string id)
+    public async Task DeleteBlogPostAsync(string? id)
     {
         await DeleteAsync(_settings.BlogPostsFolder, id);
 
@@ -103,17 +103,17 @@ public class BlogApiJsonDirectAccess : IBlogApi
                 await DeleteAsync(_settings.CommentsFolder, comment.Id);
     }
 
-    public async Task DeleteCategoryAsync(string id)
+    public async Task DeleteCategoryAsync(string? id)
     {
         await DeleteAsync(_settings.CategoriesFolder, id);
     }
 
-    public async Task DeleteTagAsync(string id)
+    public async Task DeleteTagAsync(string? id)
     {
         await DeleteAsync(_settings.TagsFolder, id);
     }
 
-    public async Task DeleteCommentAsync(string id)
+    public async Task DeleteCommentAsync(string? id)
     {
         await DeleteAsync(_settings.CommentsFolder, id);
     }
@@ -151,7 +151,7 @@ public class BlogApiJsonDirectAccess : IBlogApi
         await File.WriteAllTextAsync(filepath, JsonSerializer.Serialize(item));
     }
 
-    private Task DeleteAsync(string folder, string filename)
+    private Task DeleteAsync(string folder, string? filename)
     {
         var filepath = $"{_settings.DataPath}/{folder}/{filename}.json";
         if (File.Exists(filepath)) File.Delete(filepath);

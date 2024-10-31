@@ -2,9 +2,10 @@
 @page "/admin/blogposts/{Id}"
 @using Markdig
 @using SharedComponents.ReusableComponents
-@rendermode InteractiveServer
-@inject IBlogApi _api
-@inject NavigationManager _manager
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IBlogApi Api
+@inject NavigationManager Manager
+@inject SharedComponents.Interfaces.IBrowserStorage BrowserStorage
 @attribute [Authorize]
 
 <EditForm Model="Post" OnValidSubmit="SavePostAsync">
@@ -15,15 +16,15 @@
     <ValidationMessage For="() => Post.Title"/>
     <InputDate @bind-Value="Post.PublishDate"/>
     <ValidationMessage For="() => Post.PublishDate"/>
-    <InputSelect @bind-Value="selectedCategory">
+    <InputSelect @bind-Value="_selectedCategory">
         <option value="0" disabled>None selected</option>
-        @foreach (var category in Categories)
+        @foreach (var category in Categories!)
         {
             <option value="@category.Id">@category.Name </option>
         }
     </InputSelect>
     <ul>
-        @foreach (var tag in Tags)
+        @foreach (var tag in Tags!)
         {
             <li>
                 @tag.Name
@@ -42,74 +43,96 @@
             </li>
         }
     </ul>
-    <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHTML"/>
+    <InputTextAreaOnInput @bind-Value="Post.Text" @onkeyup="UpdateHtmlAsync"/>
     <ValidationMessage For="() => Post.Text"/>
     <BlogButton Type="BlogButton.ButtonType.Save">Save</BlogButton>
 </EditForm>
 
-@((MarkupString)markDownAsHTML)
+@((MarkupString)MarkDownAsHtml!)
 
 @code{
 
     [Parameter] public string? Id { get; set; }
     BlogPost Post { get; set; } = new();
     List<Category>? Categories { get; set; } = new();
-    List<Tag> Tags { get; set; } = new();
-    string? selectedCategory;
-    string? markDownAsHTML { get; set; }
+    List<Tag>? Tags { get; set; } = new();
+    string? _selectedCategory;
+    string? MarkDownAsHtml { get; set; }
     BlogNavigationLock? NavigationLock { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id != null)
         {
-            var p = await _api.GetBlogPostAsync(Id);
+            var p = await Api.GetBlogPostAsync(Id);
             if (p != null)
             {
                 Post = p;
                 if (Post.Category != null)
                 {
-                    selectedCategory = Post.Category.Id;
+                    _selectedCategory = Post.Category.Id;
                 }
 
-                UpdateHTML();
+                await UpdateHtmlAsync();
             }
         }
 
-        Categories = await _api.GetCategoriesAsync();
-        Tags = await _api.GetTagsAsync();
-        base.OnParametersSet();
+        Categories = await Api.GetCategoriesAsync();
+        Tags = await Api.GetTagsAsync();
+        await base.OnParametersSetAsync();
     }
 
-    MarkdownPipeline pipeline = default!;
+    MarkdownPipeline _pipeline = default!;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        pipeline = new MarkdownPipelineBuilder()
+        _pipeline = new MarkdownPipelineBuilder()
             .UseEmojiAndSmiley()
             .Build();
-        return base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
-    protected void UpdateHTML()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        markDownAsHTML = Markdown.ToHtml(Post.Text, pipeline);
+        if (firstRender && string.IsNullOrEmpty(Id))
+        {
+            var saved = await BrowserStorage.GetAsync<BlogPost>("EditCurrentPost");
+            if (saved != null)
+            {
+                Post = saved;
+                StateHasChanged();
+            }
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task UpdateHtmlAsync()
+    {
+        if (!string.IsNullOrEmpty(Post.Text))
+        {
+            MarkDownAsHtml = Markdown.ToHtml(Post.Text, _pipeline);
+            if (string.IsNullOrEmpty(Post.Id))
+            {
+                await BrowserStorage.SetAsync("EditCurrentPost", Post);
+            }
+        }
     }
 
     public async Task SavePostAsync()
     {
-        if (!string.IsNullOrEmpty(selectedCategory) && Categories != null)
+        if (!string.IsNullOrEmpty(_selectedCategory) && Categories != null)
         {
-            var category = Categories.FirstOrDefault(c => c.Id == selectedCategory);
+            var category = Categories.FirstOrDefault(c => c.Id == _selectedCategory);
             if (category != null)
             {
                 Post.Category = category;
             }
         }
 
-        await _api.SaveBlogPostAsync(Post);
+        await Api.SaveBlogPostAsync(Post);
         NavigationLock?.CurrentEditContext.MarkAsUnmodified();
-        _manager.NavigateTo("/admin/blogposts");
+        Manager.NavigateTo("/admin/blogposts");
     }
 
 }

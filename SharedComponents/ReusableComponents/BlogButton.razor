@@ -12,7 +12,7 @@
 
     private bool? _disabled = null;
     private string? _disabledHelpText = "";
-    private string formerrors = "";
+    private string _formerrors = "";
 
     [Parameter]
     public bool Disabled
@@ -29,7 +29,7 @@
                 return false;
             }
 
-            formerrors = "";
+            _formerrors = "";
             if (!TryGetValidationMessages(out var validationmessages))
             {
                 return true;
@@ -37,7 +37,7 @@
 
             foreach (var m in validationmessages)
             {
-                formerrors += m + (MarkupString)" \r\n";
+                _formerrors += m + (MarkupString)" \r\n";
             }
 
             return !EditContext.IsModified() || validationmessages.Any();
@@ -62,7 +62,7 @@
     [Parameter]
     public string? DisabledHelpText
     {
-        get => _disabledHelpText + (MarkupString)"\r\n" + formerrors;
+        get => _disabledHelpText + (MarkupString)"\r\n" + _formerrors;
         set => _disabledHelpText = value;
     }
 

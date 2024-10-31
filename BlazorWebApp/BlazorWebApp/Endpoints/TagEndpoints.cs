@@ -13,7 +13,7 @@ public static class TagEndpoints
         app.MapGet("/api/Tags/{*id}",
             async (IBlogApi api, string id) => { return Results.Ok(await api.GetTagAsync(id)); });
         app.MapDelete("/api/Tags/{*id}",
-            async (IBlogApi api, string id) =>
+            async (IBlogApi api, string? id) =>
             {
                 await api.DeleteTagAsync(id);
                 return Results.Ok();
