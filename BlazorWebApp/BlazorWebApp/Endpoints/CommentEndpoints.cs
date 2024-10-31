@@ -9,9 +9,9 @@ public static class CommentEndpoints
     public static void MapCommentApi(this WebApplication app)
     {
         app.MapGet("/api/Comments/{*blogPostid}",
-            async (IBlogApi api, string blogPostid) => { return Results.Ok(await api.GetCommentsAsync(blogPostid)); });
+            async (IBlogApi api, string? blogPostid) => { return Results.Ok(await api.GetCommentsAsync(blogPostid)); });
 
-        app.MapDelete("/api/Comments/{*id}", async (IBlogApi api, string id) =>
+        app.MapDelete("/api/Comments/{*id}", async (IBlogApi api, string? id) =>
         {
             await api.DeleteCommentAsync(id);
             return Results.Ok();

@@ -13,7 +13,7 @@ public static class CategoryEndpoints
         app.MapGet("/api/Categories/{*id}",
             async (IBlogApi api, string id) => { return Results.Ok(await api.GetCategoryAsync(id)); });
         app.MapDelete("/api/Categories/{*id}",
-            async (IBlogApi api, string id) =>
+            async (IBlogApi api, string? id) =>
             {
                 await api.DeleteCategoryAsync(id);
                 return Results.Ok();

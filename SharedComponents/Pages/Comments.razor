@@ -1,8 +1,8 @@
 @using SharedComponents.ReusableComponents
-@inject IBlogApi _api
+@inject IBlogApi Api
 
 <h3>Comments</h3>
-@foreach (var c in comments)
+@foreach (var c in _comments)
 {
     <div class="media mb-4">
         <div class="media-body">
@@ -25,22 +25,22 @@
 }
 
 @code{
-    [Parameter] [EditorRequired] public required string BlogPostId { get; set; }
+    [Parameter] [EditorRequired] public required string? BlogPostId { get; set; }
     [SupplyParameterFromForm] public Comment? Model { get; set; } = new();
-    List<Comment> comments = new();
+    List<Comment> _comments = [];
 
     protected override async Task OnInitializedAsync()
     {
-        comments = await _api.GetCommentsAsync(BlogPostId);
+        _comments = await Api.GetCommentsAsync(BlogPostId) ?? [];
     }
 
-    public async Task ValidSubmitAsync()
+    private async Task ValidSubmitAsync()
     {
-        Model.Id = Guid.NewGuid().ToString();
+        Model!.Id = Guid.NewGuid().ToString();
         Model.Date = DateTime.Now;
         Model.BlogPostId = BlogPostId;
-        await _api.SaveCommentAsync(Model);
-        comments = await _api.GetCommentsAsync(BlogPostId);
+        await Api.SaveCommentAsync(Model);
+        _comments = await Api.GetCommentsAsync(BlogPostId) ?? [];
     }
 
 }
