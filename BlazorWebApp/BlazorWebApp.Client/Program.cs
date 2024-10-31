@@ -1,7 +1,10 @@
+using Blazored.SessionStorage;
 using BlazorWebApp.Client;
+using BlazorWebApp.Client.Services;
 using Data.Models.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using SharedComponents.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -11,5 +14,8 @@ builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticat
 builder.Services.AddHttpClient("Api", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 builder.Services.AddTransient<IBlogApi, BlogApiWebClient>();
+
+builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddScoped<IBrowserStorage, BlogBrowserStorage>();
 
 await builder.Build().RunAsync();

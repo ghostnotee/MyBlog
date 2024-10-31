@@ -3,11 +3,13 @@ using BlazorWebApp;
 using BlazorWebApp.Client.Pages;
 using BlazorWebApp.Components;
 using BlazorWebApp.Endpoints;
+using BlazorWebApp.Services;
 using Data;
 using Data.Models.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using SharedComponents.Interfaces;
 using SharedComponents.Pages;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,8 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.Domain = builder.Configuration["Auth0:Authority"] ?? "";
     options.ClientId = builder.Configuration["Auth0:ClientId"] ?? "";
 });
+
+builder.Services.AddScoped<IBrowserStorage, BlogProtectedBrowserStorage>();
 
 var app = builder.Build();
 
