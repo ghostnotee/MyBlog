@@ -5,18 +5,18 @@
 
 <a href="/admin/blogposts/new">New blog post</a>
 
-@if (posts?.Count == 0)
+@if (_posts?.Count == 0)
 {
     <p>No blog posts found</p>
 }
-else if (posts == null)
+else if (_posts == null)
 {
     <p>Loading...</p>
 }
 else
 {
     <ul>
-        @foreach (var p in posts)
+        @foreach (var p in _posts)
         {
             <li>
                 @p.PublishDate
@@ -27,13 +27,13 @@ else
 }
 
 @code {
-    private List<BlogPost>? posts;
+    private List<BlogPost>? _posts;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1000);
-        var numberofposts = await _api.GetBlogPostCountAsync();
-        posts = await _api.GetBlogPostsAsync(numberofposts, 0);
+        var numberOfPosts = await _api.GetBlogPostCountAsync();
+        _posts = await _api.GetBlogPostsAsync(numberOfPosts, 0);
         await base.OnInitializedAsync();
     }
 
