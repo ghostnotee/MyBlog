@@ -3,6 +3,7 @@ using BlazorWebApp;
 using BlazorWebApp.Client.Pages;
 using BlazorWebApp.Components;
 using BlazorWebApp.Endpoints;
+using BlazorWebApp.Hubs;
 using BlazorWebApp.Services;
 using Data;
 using Data.Models.Interfaces;
@@ -43,6 +44,8 @@ builder.Services.AddScoped<IBrowserStorage, BlogProtectedBrowserStorage>();
 
 builder.Services.AddSingleton<IBlogNotificationService, BlazorServerBlogNotificationService>();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,6 +67,8 @@ app.UseAntiforgery();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<BlogNotificationHub>("/BlogNotificationHub");
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
