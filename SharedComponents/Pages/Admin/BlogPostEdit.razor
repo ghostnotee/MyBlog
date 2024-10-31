@@ -3,8 +3,8 @@
 @using Markdig
 @using SharedComponents.Interfaces
 @using SharedComponents.ReusableComponents
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
-@* @rendermode @(new InteractiveWebAssemblyRenderMode(false)) *@
+@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
 @inject IBlogApi Api
 @inject NavigationManager NavigationManager
 @inject IBrowserStorage BrowserStorage

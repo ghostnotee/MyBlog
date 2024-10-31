@@ -16,15 +16,15 @@ public class BlazorWebAssemblyBlogNotificationService : IBlogNotificationService
         _hubConnection.StartAsync();
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _hubConnection.DisposeAsync();
-    }
-
     public event Action<BlogPost>? BlogPostChanged;
 
     public async Task SendNotification(BlogPost post)
     {
         await _hubConnection.SendAsync("SendNotification", post);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _hubConnection.DisposeAsync();
     }
 }
