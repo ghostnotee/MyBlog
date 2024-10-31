@@ -41,6 +41,8 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 
 builder.Services.AddScoped<IBrowserStorage, BlogProtectedBrowserStorage>();
 
+builder.Services.AddSingleton<IBlogNotificationService, BlazorServerBlogNotificationService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

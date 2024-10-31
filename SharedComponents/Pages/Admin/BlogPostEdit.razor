@@ -3,11 +3,12 @@
 @using Markdig
 @using SharedComponents.Interfaces
 @using SharedComponents.ReusableComponents
-@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
-@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(false)) *@
 @inject IBlogApi Api
-@inject NavigationManager Manager
+@inject NavigationManager NavigationManager
 @inject IBrowserStorage BrowserStorage
+@inject IBlogNotificationService NotificationService
 @attribute [Authorize]
 
 <EditForm Model="Post" OnValidSubmit="SavePostAsync">
@@ -113,6 +114,7 @@
     {
         if (!string.IsNullOrEmpty(Post.Text))
         {
+            await NotificationService.SendNotification(Post);
             MarkDownAsHtml = Markdown.ToHtml(Post.Text, _pipeline);
             if (string.IsNullOrEmpty(Post.Id))
             {
@@ -134,7 +136,7 @@
 
         await Api.SaveBlogPostAsync(Post);
         NavigationLock?.CurrentEditContext.MarkAsUnmodified();
-        Manager.NavigateTo("/admin/blogposts");
+        NavigationManager.NavigateTo("/admin/blogposts");
     }
 
 }
