@@ -30,5 +30,11 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BlazorWebApp\BlazorWebApp\BlazorWebApp.csproj" />
+      <ProjectReference Include="..\Data.Models\Data.Models.csproj" />
+      <ProjectReference Include="..\SharedComponents\SharedComponents.csproj" />
+    </ItemGroup>
+
 
 </Project>
