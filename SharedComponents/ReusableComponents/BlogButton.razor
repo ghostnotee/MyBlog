@@ -2,7 +2,7 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime JsRuntime
 
-<button type="@InternalButtonType" disabled="@Disabled" class="@InternalCssClass" title="@Title" @onclick="OnButtonClick">
+<button type="@InternalButtonType" disabled="@ComputeDisabled()" class="@InternalCssClass" title="@ComputeDisabledHelpText()" @onclick="OnButtonClick">
     @ChildContent
 </button>
 
@@ -15,34 +15,38 @@
     private string _formerrors = "";
 
     [Parameter]
-    public bool Disabled
+    public bool Disabled { get; set; } = false;
+    private bool ComputeDisabled()
     {
-        get
+        if (_disabled != null)
         {
-            if (_disabled != null && (_disabled == null || _disabled.Value))
-            {
-                return _disabled!.Value;
-            }
-
-            if (EditContext == null)
-            {
-                return false;
-            }
-
-            _formerrors = "";
-            if (!TryGetValidationMessages(out var validationmessages))
-            {
-                return true;
-            }
-
-            foreach (var m in validationmessages)
-            {
-                _formerrors += m + (MarkupString)" \r\n";
-            }
-
-            return !EditContext.IsModified() || validationmessages.Any();
+            return _disabled.Value;
         }
-        set => _disabled = value;
+
+        if (EditContext == null)
+        {
+            return false;
+        }
+
+        _formerrors = "";
+        if (!TryGetValidationMessages(out var validationmessages))
+        {
+            return true;
+        }
+
+        foreach (var m in validationmessages)
+        {
+            _formerrors += m + (MarkupString)" \r\n";
+        }
+
+        return !EditContext.IsModified() || validationmessages.Any();
+    }
+    
+    [Parameter]
+    public string? DisabledHelpText { get; set; } = null;
+    private string ComputeDisabledHelpText()
+    {
+        return (_disabledHelpText ?? "") + (MarkupString)"\r\n" + _formerrors;
     }
 
     private bool TryGetValidationMessages(out string[] validationMessages)
@@ -58,13 +62,6 @@
     }
 
     private string? Title => Disabled && !string.IsNullOrWhiteSpace(DisabledHelpText) ? DisabledHelpText : HelpText;
-
-    [Parameter]
-    public string? DisabledHelpText
-    {
-        get => _disabledHelpText + (MarkupString)"\r\n" + _formerrors;
-        set => _disabledHelpText = value;
-    }
 
     [Parameter] public string? HelpText { get; set; }
 
